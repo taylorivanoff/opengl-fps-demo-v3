@@ -10,7 +10,7 @@ public class CameraComponent extends Component {
     public float fov;
     public float nearClip;
     public float farClip;
-    
+
     private float yaw = -90f;
     private float pitch = 0f;
     private float mouseSensitivity = 0.1f;
@@ -38,7 +38,7 @@ public class CameraComponent extends Component {
                 (float) GameConstants.WINDOW_WIDTH / GameConstants.WINDOW_HEIGHT,
                 nearClip,
                 farClip);
-                
+
         updateCameraVectors();
     }
 
@@ -49,17 +49,17 @@ public class CameraComponent extends Component {
         yaw += xoffset;
         pitch += yoffset;
 
-        // Constrain pitch to avoid camera flipping
         if (constrainPitch) {
-            if (pitch > 89.0f) pitch = 89.0f;
-            if (pitch < -89.0f) pitch = -89.0f;
+            if (pitch > 89.0f)
+                pitch = 89.0f;
+            if (pitch < -89.0f)
+                pitch = -89.0f;
         }
 
         updateCameraVectors();
     }
 
     private void updateCameraVectors() {
-        // Calculate the new front vector
         front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         front.y = (float) Math.sin(Math.toRadians(pitch));
         front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));

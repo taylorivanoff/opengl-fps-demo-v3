@@ -9,7 +9,6 @@ public class InputBindingManager {
     private Map<String, Integer> actionKeyMap = new HashMap<>();
 
     public InputBindingManager() {
-        // Default key bindings.
         actionKeyMap.put("MOVE_LEFT", GLFW_KEY_A);
         actionKeyMap.put("MOVE_RIGHT", GLFW_KEY_D);
         actionKeyMap.put("MOVE_FORWARD", GLFW_KEY_W);

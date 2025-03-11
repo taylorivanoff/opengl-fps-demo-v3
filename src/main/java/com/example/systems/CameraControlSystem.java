@@ -27,15 +27,12 @@ public class CameraControlSystem extends GameSystem {
             TransformComponent transform = entity.getComponent(TransformComponent.class);
 
             if (camera != null && transform != null) {
-                // Handle mouse movement
                 double[] mouseDeltas = windowManager.getMouseDeltas();
                 camera.processMouseMovement((float) mouseDeltas[0], (float) mouseDeltas[1], true);
 
-                // Get the camera's orientation vectors
                 Vector3f front = camera.getFront();
                 Vector3f right = new Vector3f(front).cross(new Vector3f(0, 1, 0)).normalize();
 
-                // Handle keyboard input for movement
                 if (glfwGetKey(windowManager.getWindowHandle(), GLFW_KEY_W) == GLFW_PRESS) {
                     transform.x += front.x * moveSpeed * deltaTime;
                     transform.z += front.z * moveSpeed * deltaTime;
@@ -53,7 +50,6 @@ public class CameraControlSystem extends GameSystem {
                     transform.z += right.z * moveSpeed * deltaTime;
                 }
 
-                // Update camera position
                 camera.setPosition(new Vector3f(transform.x, transform.y, transform.z));
             }
         }

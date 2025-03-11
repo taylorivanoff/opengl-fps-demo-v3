@@ -19,26 +19,12 @@ public class Mesh {
     private final int vertexCount;
     private Texture texture;
 
-    /**
-     * Constructs a Mesh from lists of vertex and index data.
-     *
-     * @param vertices a list of vertex positions (x, y, z)
-     * @param normals  a list of vertex normals (x, y, z) for lighting
-     * @param indices  a list of indices defining triangles
-     */
     public Mesh(List<Float> vertices, List<Float> normals, List<Float> textureCoords, List<Integer> indices,
             Texture texture) {
         this(convertToFloatArray(vertices), convertToFloatArray(normals), convertToFloatArray(textureCoords),
                 convertToIntArray(indices), texture);
     }
 
-    /**
-     * Constructs a Mesh from arrays of vertex and index data.
-     *
-     * @param vertices an array of vertex positions (x, y, z)
-     * @param normals  an array of vertex normals (x, y, z) for lighting
-     * @param indices  an array of indices defining triangles
-     */
     public Mesh(float[] vertices, float[] normals, float[] texCoords, int[] indices, Texture texture) {
         this.vertexCount = indices.length;
         this.texture = texture;
@@ -46,7 +32,6 @@ public class Mesh {
         vaoId = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoId);
 
-        // Upload vertex position data into VBO
         vboId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
@@ -55,7 +40,6 @@ public class Mesh {
         GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 3 * Float.BYTES, 0);
         GL20.glEnableVertexAttribArray(0);
 
-        // Upload normal data into VBO
         nboId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, nboId);
         FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(normals.length);
@@ -64,7 +48,6 @@ public class Mesh {
         GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 3 * Float.BYTES, 0);
         GL20.glEnableVertexAttribArray(1);
 
-        // Upload texture coordinates
         tboId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, tboId);
         FloatBuffer texCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
@@ -73,21 +56,16 @@ public class Mesh {
         GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 2 * Float.BYTES, 0);
         GL20.glEnableVertexAttribArray(2);
 
-        // Upload index data into EBO
         idxVboId = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, idxVboId);
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
         indicesBuffer.put(indices).flip();
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
 
-        // Unbind VBO and VAO
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
     }
 
-    /**
-     * Renders the mesh using the currently bound shader.
-     */
     public void render() {
         GL30.glBindVertexArray(vaoId);
 
@@ -108,9 +86,6 @@ public class Mesh {
         GL30.glBindVertexArray(0);
     }
 
-    /**
-     * Cleans up the mesh's GPU resources.
-     */
     public void cleanup() {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
@@ -128,7 +103,6 @@ public class Mesh {
         }
     }
 
-    // Convert List<Float> to float[]
     private static float[] convertToFloatArray(List<Float> list) {
         float[] array = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -137,7 +111,6 @@ public class Mesh {
         return array;
     }
 
-    // Convert List<Integer> to int[]
     private static int[] convertToIntArray(List<Integer> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {

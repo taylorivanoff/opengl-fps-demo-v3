@@ -12,6 +12,4 @@ public class TransformComponent extends Component {
         this.y = y;
         this.z = z;
     }
-
-    
 }

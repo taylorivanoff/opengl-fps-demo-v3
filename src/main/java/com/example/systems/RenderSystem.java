@@ -31,26 +31,21 @@ public class RenderSystem extends GameSystem {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer matrixBuffer = stack.mallocFloat(16);
 
-            // Clear the screen
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-            // Find the player entity
             Entity playerEntity = getPlayerEntity();
             if (playerEntity == null) {
                 return;
             }
 
-            // Get camera component
             CameraComponent camera = playerEntity.getComponent(CameraComponent.class);
             if (camera == null) {
                 return;
             }
 
-            // Get matrices
             Matrix4f viewMatrix = camera.getViewMatrix();
             Matrix4f projectionMatrix = camera.getProjectionMatrix();
 
-            // Process each entity with RenderableComponent
             List<Entity> entities = entityManager.getEntitiesWithComponent(RenderableComponent.class);
 
             if (debugMode) {
@@ -62,24 +57,20 @@ public class RenderSystem extends GameSystem {
                 RenderableComponent renderable = entity.getComponent(RenderableComponent.class);
 
                 if (transform != null && renderable != null) {
-                    // Bind shader and set up model matrix
                     renderable.shader.bind();
 
                     Matrix4f modelMatrix = new Matrix4f()
                             .translate(new Vector3f(transform.x, transform.y, transform.z));
                     modelMatrix.get(matrixBuffer);
 
-                    // Set uniforms
                     renderable.shader.setUniform("uModel", matrixBuffer);
                     viewMatrix.get(matrixBuffer);
                     renderable.shader.setUniform("uView", matrixBuffer);
                     projectionMatrix.get(matrixBuffer);
                     renderable.shader.setUniform("uProjection", matrixBuffer);
 
-                    // Render the mesh
                     renderable.mesh.render();
 
-                    // Unbind the shader
                     renderable.shader.unbind();
                 }
             }

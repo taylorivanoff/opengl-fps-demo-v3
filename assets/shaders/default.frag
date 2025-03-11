@@ -7,10 +7,13 @@ in vec2 TexCoord;    // Interpolated texture coordinate
 out vec4 FragColor;  // Final color output
 
 uniform sampler2D uTexture;   // Texture sampler
-uniform vec3 uLightPos;       // Position of the light source
 uniform vec3 uViewPos;        // Camera position
-uniform vec3 uLightColor;     // Light color
-uniform vec3 uAmbientColor;   // Ambient light color
+
+// Default lighting parameters
+uniform vec3 uLightPos    = vec3(10.0, 10.0, 10.0);
+uniform vec3 uLightColor  = vec3(1.0, 1.0, 1.0);
+uniform vec3 uAmbientColor = vec3(0.2, 0.2, 0.2);
+uniform float uShininess  = 32.0;
 
 void main() {
     // Normalize interpolated normal

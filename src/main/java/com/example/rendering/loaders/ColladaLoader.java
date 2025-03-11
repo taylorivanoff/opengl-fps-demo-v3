@@ -18,9 +18,8 @@ public class ColladaLoader {
             throw new RuntimeException("Failed to load COLLADA file: " + filePath);
         }
 
-        AIMesh mesh = AIMesh.create(scene.mMeshes().get(0)); // Assume first mesh
+        AIMesh mesh = AIMesh.create(scene.mMeshes().get(0));
 
-        // Load vertex positions
         List<Float> verticesList = new ArrayList<>();
         AIVector3D.Buffer vertices = mesh.mVertices();
         for (int i = 0; i < mesh.mNumVertices(); i++) {
@@ -30,7 +29,6 @@ public class ColladaLoader {
             verticesList.add(v.z());
         }
 
-        // Load normals
         List<Float> normalsList = new ArrayList<>();
         AIVector3D.Buffer normals = mesh.mNormals();
         if (normals != null) {
@@ -42,7 +40,6 @@ public class ColladaLoader {
             }
         }
 
-        // Load texture coordinates
         List<Float> textureCoordsList = new ArrayList<>();
         AIVector3D.Buffer texCoords = mesh.mTextureCoords(0);
         if (texCoords != null) {
@@ -53,7 +50,6 @@ public class ColladaLoader {
             }
         }
 
-        // Load indices
         List<Integer> indicesList = new ArrayList<>();
         AIFace.Buffer faces = mesh.mFaces();
         for (int i = 0; i < mesh.mNumFaces(); i++) {
@@ -64,7 +60,6 @@ public class ColladaLoader {
             }
         }
 
-        // Load material texture
         Texture texture = null;
         if (scene.mMaterials() != null) {
             int materialIndex = mesh.mMaterialIndex();
@@ -88,7 +83,7 @@ public class ColladaLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            System.out.println("Load: " + texturePath);
+            System.out.println("Loaded: " + texturePath);
             return new Texture("assets/" + texturePath);
         }
 

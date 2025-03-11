@@ -42,7 +42,5 @@ public class PlayState extends GameState {
 
     @Override
     public void cleanup() {
-        // Cleanup state resources.
-        System.out.println("Cleaning up play state...");
     }
 }
