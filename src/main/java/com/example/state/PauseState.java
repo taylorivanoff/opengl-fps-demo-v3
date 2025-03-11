@@ -26,13 +26,6 @@ public class PauseState extends GameState {
     }
 
     @Override
-    public void render() {
-        // Render pause menu overlay (in a full implementation, you would render text
-        // and buttons).
-        System.out.println("Rendering pause menu...");
-    }
-
-    @Override
     public void cleanup() {
         System.out.println("Cleaning up pause state resources...");
     }

@@ -15,6 +15,8 @@ import com.example.ecs.components.CameraComponent;
 import com.example.ecs.components.PlayerComponent;
 import com.example.ecs.components.RenderableComponent;
 import com.example.ecs.components.TransformComponent;
+import com.example.utils.Logger;
+import com.example.utils.Logger.Level;
 
 public class RenderSystem extends GameSystem {
     private EntityManager entityManager;
@@ -35,14 +37,12 @@ public class RenderSystem extends GameSystem {
             // Find the player entity
             Entity playerEntity = getPlayerEntity();
             if (playerEntity == null) {
-                System.out.println("Debug: Player entity not found");
                 return;
             }
 
             // Get camera component
             CameraComponent camera = playerEntity.getComponent(CameraComponent.class);
             if (camera == null) {
-                System.out.println("Debug: Camera component not found on player");
                 return;
             }
 
@@ -50,15 +50,11 @@ public class RenderSystem extends GameSystem {
             Matrix4f viewMatrix = camera.getViewMatrix();
             Matrix4f projectionMatrix = camera.getProjectionMatrix();
 
-            if (debugMode) {
-                System.out.println("Debug: Camera Position: " + camera.getPosition());
-                System.out.println("Debug: Camera Front: " + camera.getFront());
-            }
-
             // Process each entity with RenderableComponent
             List<Entity> entities = entityManager.getEntitiesWithComponent(RenderableComponent.class);
+
             if (debugMode) {
-                System.out.println("Debug: Number of renderable entities: " + entities.size());
+                Logger.log(Level.DEBUG, "Rendered Entities: " + entities.size());
             }
 
             for (Entity entity : entities) {
@@ -66,11 +62,6 @@ public class RenderSystem extends GameSystem {
                 RenderableComponent renderable = entity.getComponent(RenderableComponent.class);
 
                 if (transform != null && renderable != null) {
-                    if (debugMode) {
-                        System.out.println("Debug: Rendering entity at position: " + 
-                            new Vector3f(transform.x, transform.y, transform.z));
-                    }
-
                     // Bind shader and set up model matrix
                     renderable.shader.bind();
 
@@ -97,11 +88,13 @@ public class RenderSystem extends GameSystem {
 
     private Entity getPlayerEntity() {
         List<Entity> entities = entityManager.getEntitiesWithComponent(PlayerComponent.class);
+
         for (Entity entity : entities) {
             if (entity.getComponent(PlayerComponent.class) != null) {
                 return entity;
             }
         }
+
         return null;
     }
 }
