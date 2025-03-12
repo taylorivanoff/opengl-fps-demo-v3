@@ -6,9 +6,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import com.example.core.WindowManager;
 import com.example.ecs.Entity;
 import com.example.ecs.EntityManager;
-import com.example.ecs.GameSystem;
-import com.example.ecs.components.CameraComponent;
-import com.example.ecs.components.TransformComponent;
+import com.example.ecs.components.Camera;
+import com.example.ecs.components.Transform;
 
 public class CameraControlSystem extends GameSystem {
     private WindowManager windowManager;
@@ -23,8 +22,8 @@ public class CameraControlSystem extends GameSystem {
     @Override
     public void update(float deltaTime) {
         for (Entity entity : entityManager.getAllEntities()) {
-            CameraComponent camera = entity.getComponent(CameraComponent.class);
-            TransformComponent transform = entity.getComponent(TransformComponent.class);
+            Camera camera = entity.getComponent(Camera.class);
+            Transform transform = entity.getComponent(Transform.class);
 
             if (camera != null && transform != null) {
                 double[] mouseDeltas = windowManager.getMouseDeltas();
@@ -34,23 +33,23 @@ public class CameraControlSystem extends GameSystem {
                 Vector3f right = new Vector3f(front).cross(new Vector3f(0, 1, 0)).normalize();
 
                 if (glfwGetKey(windowManager.getWindowHandle(), GLFW_KEY_W) == GLFW_PRESS) {
-                    transform.x += front.x * moveSpeed * deltaTime;
-                    transform.z += front.z * moveSpeed * deltaTime;
+                    transform.position.x += front.x * moveSpeed * deltaTime;
+                    transform.position.z += front.z * moveSpeed * deltaTime;
                 }
                 if (glfwGetKey(windowManager.getWindowHandle(), GLFW_KEY_S) == GLFW_PRESS) {
-                    transform.x -= front.x * moveSpeed * deltaTime;
-                    transform.z -= front.z * moveSpeed * deltaTime;
+                    transform.position.x -= front.x * moveSpeed * deltaTime;
+                    transform.position.z -= front.z * moveSpeed * deltaTime;
                 }
                 if (glfwGetKey(windowManager.getWindowHandle(), GLFW_KEY_A) == GLFW_PRESS) {
-                    transform.x -= right.x * moveSpeed * deltaTime;
-                    transform.z -= right.z * moveSpeed * deltaTime;
+                    transform.position.x -= right.x * moveSpeed * deltaTime;
+                    transform.position.z -= right.z * moveSpeed * deltaTime;
                 }
                 if (glfwGetKey(windowManager.getWindowHandle(), GLFW_KEY_D) == GLFW_PRESS) {
-                    transform.x += right.x * moveSpeed * deltaTime;
-                    transform.z += right.z * moveSpeed * deltaTime;
+                    transform.position.x += right.x * moveSpeed * deltaTime;
+                    transform.position.z += right.z * moveSpeed * deltaTime;
                 }
 
-                camera.setPosition(new Vector3f(transform.x, transform.y, transform.z));
+                camera.setPosition(new Vector3f(transform.position.x, transform.position.y, transform.position.z));
             }
         }
     }

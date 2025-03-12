@@ -6,10 +6,10 @@ import org.joml.Vector3f;
 import com.example.core.GameConstants;
 import com.example.ecs.Component;
 
-public class CameraComponent extends Component {
-    public float fov;
-    public float nearClip;
-    public float farClip;
+public class Camera extends Component {
+    public float fov = 70f;
+    public float nearClip = 0.1f;
+    public float farClip = 1000f;
 
     private float yaw = -90f;
     private float pitch = 0f;
@@ -28,11 +28,7 @@ public class CameraComponent extends Component {
         return pitch;
     }
 
-    public CameraComponent(float fov, float nearClip, float farClip) {
-        this.fov = fov;
-        this.nearClip = nearClip;
-        this.farClip = farClip;
-
+    public Camera() {
         this.projection = new Matrix4f().perspective(
                 (float) Math.toRadians(fov),
                 (float) GameConstants.WINDOW_WIDTH / GameConstants.WINDOW_HEIGHT,

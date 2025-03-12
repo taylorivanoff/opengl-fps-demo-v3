@@ -10,17 +10,16 @@ import org.lwjgl.system.MemoryStack;
 
 import com.example.ecs.Entity;
 import com.example.ecs.EntityManager;
-import com.example.ecs.GameSystem;
-import com.example.ecs.components.CameraComponent;
-import com.example.ecs.components.PlayerComponent;
-import com.example.ecs.components.RenderableComponent;
-import com.example.ecs.components.TransformComponent;
+import com.example.ecs.components.Camera;
+import com.example.ecs.components.Player;
+import com.example.ecs.components.Renderable;
+import com.example.ecs.components.Transform;
 import com.example.utils.Logger;
 import com.example.utils.Logger.Level;
 
 public class RenderSystem extends GameSystem {
     private EntityManager entityManager;
-    private boolean debugMode = false;
+    private boolean debugMode = true;
 
     public RenderSystem(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -38,7 +37,7 @@ public class RenderSystem extends GameSystem {
                 return;
             }
 
-            CameraComponent camera = playerEntity.getComponent(CameraComponent.class);
+            Camera camera = playerEntity.getComponent(Camera.class);
             if (camera == null) {
                 return;
             }
@@ -46,21 +45,21 @@ public class RenderSystem extends GameSystem {
             Matrix4f viewMatrix = camera.getViewMatrix();
             Matrix4f projectionMatrix = camera.getProjectionMatrix();
 
-            List<Entity> entities = entityManager.getEntitiesWithComponent(RenderableComponent.class);
+            List<Entity> entities = entityManager.getEntitiesWith(Renderable.class);
 
             if (debugMode) {
                 Logger.log(Level.DEBUG, "Rendered Entities: " + entities.size());
             }
 
             for (Entity entity : entities) {
-                TransformComponent transform = entity.getComponent(TransformComponent.class);
-                RenderableComponent renderable = entity.getComponent(RenderableComponent.class);
+                Transform transform = entity.getComponent(Transform.class);
+                Renderable renderable = entity.getComponent(Renderable.class);
 
                 if (transform != null && renderable != null) {
                     renderable.shader.bind();
 
                     Matrix4f modelMatrix = new Matrix4f()
-                            .translate(new Vector3f(transform.x, transform.y, transform.z));
+                            .translate(new Vector3f(transform.position.x, transform.position.y, transform.position.z));
                     modelMatrix.get(matrixBuffer);
 
                     renderable.shader.setUniform("uModel", matrixBuffer);
@@ -78,10 +77,10 @@ public class RenderSystem extends GameSystem {
     }
 
     private Entity getPlayerEntity() {
-        List<Entity> entities = entityManager.getEntitiesWithComponent(PlayerComponent.class);
+        List<Entity> entities = entityManager.getEntitiesWith(Player.class);
 
         for (Entity entity : entities) {
-            if (entity.getComponent(PlayerComponent.class) != null) {
+            if (entity.getComponent(Player.class) != null) {
                 return entity;
             }
         }

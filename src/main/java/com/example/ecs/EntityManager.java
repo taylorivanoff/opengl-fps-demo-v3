@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.example.systems.GameSystem;
+
 public class EntityManager {
     private final Map<Integer, Entity> entities = new ConcurrentHashMap<>();
     private final List<GameSystem> systems = new ArrayList<>();
@@ -28,7 +30,7 @@ public class EntityManager {
         return Collections.unmodifiableCollection(entities.values());
     }
 
-    public <T extends Component> List<Entity> getEntitiesWithComponent(Class<T> componentClass) {
+    public <T extends Component> List<Entity> getEntitiesWith(Class<T> componentClass) {
         List<Entity> result = new ArrayList<>();
         for (Entity entity : entities.values()) {
             if (entity.hasComponent(componentClass)) {
