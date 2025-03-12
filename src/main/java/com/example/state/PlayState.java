@@ -17,8 +17,6 @@ public class PlayState extends GameState {
 
     @Override
     public void init() {
-        System.out.println("Initializing play state...");
-
         ShaderProgram shader = new ShaderProgram("assets/shaders/default.vert", "assets/shaders/default.frag");
 
         RenderSystem renderSystem = new RenderSystem(entityManager);
