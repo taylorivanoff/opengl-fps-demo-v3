@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
+import com.example.core.GameConstants;
 import com.example.ecs.Entity;
 import com.example.ecs.EntityManager;
 import com.example.ecs.components.*;
@@ -14,6 +15,11 @@ import com.example.ecs.components.*;
 public class RenderSystem extends GameSystem {
     private Entity cameraEntity;
     private EntityManager entityManager;
+
+    private float fov = 65.0f;
+    private float aspectRatio = GameConstants.WINDOW_WIDTH / GameConstants.WINDOW_HEIGHT;
+    private float nearPlane = 0.1f;
+    private float farPlane = 1000f;
 
     private Matrix4f viewMatrix = new Matrix4f();
 
@@ -30,7 +36,7 @@ public class RenderSystem extends GameSystem {
             FloatBuffer matrixBuffer = stack.mallocFloat(16);
 
             CameraComponent camera = cameraEntity.getComponent(CameraComponent.class);
-            Matrix4f projectionMatrix = camera.getProjectionMatrix();
+            Matrix4f projectionMatrix = getProjectionMatrix();
             Matrix4f viewMatrix = getViewMatrix(camera);
 
             for (Entity entity : entityManager.getEntitiesWith(RenderableComponent.class)) {
@@ -56,6 +62,10 @@ public class RenderSystem extends GameSystem {
                 }
             }
         }
+    }
+
+    public Matrix4f getProjectionMatrix() {
+        return new Matrix4f().perspective((float) Math.toRadians(fov), (float) aspectRatio, nearPlane, farPlane);
     }
 
     public Matrix4f getViewMatrix(CameraComponent camera) {
