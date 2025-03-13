@@ -6,8 +6,6 @@ import com.example.ecs.Entity;
 import com.example.ecs.components.TransformComponent;
 import com.example.input.InputBindingManager;
 import com.example.input.InputManager;
-import com.example.utils.Logger;
-import com.example.utils.Logger.Level;
 
 public class CharacterControllerSystem extends GameSystem {
     private Entity player;
@@ -54,9 +52,7 @@ public class CharacterControllerSystem extends GameSystem {
 
         handleKeyboard(dt);
         applyGravity(dt);
-        // updateHeadBob(dt);
-
-        Logger.log(Level.DEBUG, "player: " + transform.position);
+        updateHeadBob(dt);
     }
 
     private void handleKeyboard(float dt) {
@@ -64,8 +60,6 @@ public class CharacterControllerSystem extends GameSystem {
                 input.isActionPressed(InputBindingManager.Action.MOVE_BACKWARD) ||
                 input.isActionPressed(InputBindingManager.Action.MOVE_LEFT) ||
                 input.isActionPressed(InputBindingManager.Action.MOVE_RIGHT);
-
-        Logger.log(Level.DEBUG, "isActivelyMoving: " + isActivelyMoving);
 
         // Update speed modifiers
         currentSpeed = baseSpeed;

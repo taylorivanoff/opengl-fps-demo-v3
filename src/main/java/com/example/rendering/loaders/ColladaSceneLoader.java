@@ -100,7 +100,7 @@ public class ColladaSceneLoader {
             }
         }
 
-        Logger.log(Level.INFO,
+        Logger.log(Level.DEBUG,
                 "Loaded mesh: " + mesh.mName().dataString() + " with " + verticesList.size() / 3 + " vertices.");
         return new Mesh(verticesList, normalsList, textureCoordsList, indicesList, texture);
     }
@@ -114,7 +114,7 @@ public class ColladaSceneLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            Logger.log(Level.INFO, "Texture: " + texturePath);
+            Logger.log(Level.DEBUG, "Loaded texture: " + texturePath);
             return new Texture("assets/" + texturePath);
         }
         return null;

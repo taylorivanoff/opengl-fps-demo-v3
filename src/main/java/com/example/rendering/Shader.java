@@ -47,7 +47,7 @@ public class Shader {
             throw new RuntimeException("Shader compilation failed: " + GL20.glGetShaderInfoLog(shaderId));
         }
 
-        Logger.log(Level.INFO, "Loaded shader: " + filePath);
+        Logger.log(Level.DEBUG, "Loaded shader: " + filePath);
 
         return shaderId;
     }

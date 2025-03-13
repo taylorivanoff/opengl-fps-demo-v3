@@ -6,8 +6,6 @@ import com.example.ecs.Entity;
 import com.example.ecs.components.CameraComponent;
 import com.example.ecs.components.TransformComponent;
 import com.example.input.InputManager;
-import com.example.utils.Logger;
-import com.example.utils.Logger.Level;
 
 public class CameraSystem extends GameSystem {
     private Entity cameraEntity;
@@ -39,8 +37,6 @@ public class CameraSystem extends GameSystem {
 
         cameraComponent.position.set(playerTransform.position);
         playerTransform.rotation = cameraComponent.rotation;
-        Logger.log(Level.DEBUG, "cameraPos: " + cameraComponent.position);
-        Logger.log(Level.DEBUG, "cameraRot: " + cameraComponent.rotation);
     }
 
 }

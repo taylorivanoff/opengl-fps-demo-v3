@@ -5,7 +5,7 @@ public class Logger {
         DEBUG, INFO, WARN, ERROR
     }
 
-    private static Level currentLevel = Level.INFO;
+    private static Level currentLevel = Level.DEBUG;
 
     public static void log(Level level, String message) {
         if (level.ordinal() >= currentLevel.ordinal()) {

@@ -71,7 +71,7 @@ public class ColladaLoader {
             }
         }
 
-        Logger.log(Level.INFO, "Loaded mesh: " + filePath + " (" + verticesList.size() / 3 + " vertices)");
+        Logger.log(Level.DEBUG, "Loaded mesh: " + filePath + " (" + verticesList.size() / 3 + " vertices)");
 
         return new Mesh(verticesList, normalsList, textureCoordsList, indicesList, texture);
     }
@@ -85,7 +85,7 @@ public class ColladaLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            Logger.log(Level.INFO, "Loaded texture: " + texturePath);
+            Logger.log(Level.DEBUG, "Loaded texture: " + texturePath);
 
             return new Texture("assets/" + texturePath);
         }

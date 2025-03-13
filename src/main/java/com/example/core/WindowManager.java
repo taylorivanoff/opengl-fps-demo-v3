@@ -9,6 +9,9 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import com.example.utils.Logger;
+import com.example.utils.Logger.Level;
+
 public class WindowManager {
     private long window;
     private double lastTime;
@@ -55,9 +58,9 @@ public class WindowManager {
 
         GL.createCapabilities();
 
-        System.out.println("OpenGL Version: " + glGetString(GL_VERSION));
-        System.out.println("OpenGL Vendor: " + glGetString(GL_VENDOR));
-        System.out.println("OpenGL Renderer: " + glGetString(GL_RENDERER));
+        Logger.log(Level.INFO, "OpenGL Version: " + glGetString(GL_VERSION));
+        Logger.log(Level.INFO, "OpenGL Vendor: " + glGetString(GL_VENDOR));
+        Logger.log(Level.INFO, "OpenGL Renderer: " + glGetString(GL_RENDERER));
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
