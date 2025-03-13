@@ -158,4 +158,9 @@
   <scene>
     <instance_visual_scene url="#Scene"/>
   </scene>
+    <library_images>
+    <image id="Untitled" name="Untitled">
+      <init_from>Untitled.jpg</init_from>
+    </image>
+  </library_images>
 </COLLADA>
