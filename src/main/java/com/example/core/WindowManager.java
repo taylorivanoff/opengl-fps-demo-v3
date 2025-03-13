@@ -27,6 +27,9 @@ public class WindowManager {
 
         glfwDefaultWindowHints();
 
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -53,7 +56,6 @@ public class WindowManager {
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(0);
-        glfwShowWindow(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         GL.createCapabilities();
@@ -65,11 +67,13 @@ public class WindowManager {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        // GL11.glEnable(GL11.GL_CULL_FACE);
-        // GL11.glDepthFunc(GL11.GL_LESS);
-        // GL11.glCullFace(GL11.GL_BACK);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDepthFunc(GL11.GL_LESS);
+        GL11.glCullFace(GL11.GL_BACK);
 
         GL11.glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+
+        glfwShowWindow(window);
 
         lastTime = glfwGetTime();
     }
