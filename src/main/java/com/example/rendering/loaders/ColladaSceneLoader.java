@@ -1,9 +1,10 @@
 package com.example.rendering.loaders;
 
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.assimp.*;
 
 import com.example.rendering.Mesh;
@@ -11,8 +12,9 @@ import com.example.rendering.Texture;
 import com.example.utils.Logger;
 import com.example.utils.Logger.Level;
 
-public class ColladaLoader {
-    public static Mesh load(String filePath) {
+public class ColladaSceneLoader {
+
+    public static Map<Mesh, Vector3f> load(String filePath) {
         AIScene scene = Assimp.aiImportFile(filePath,
                 Assimp.aiProcess_Triangulate | Assimp.aiProcess_GenNormals | Assimp.aiProcess_FlipUVs);
 
@@ -20,8 +22,35 @@ public class ColladaLoader {
             throw new RuntimeException("Failed to load COLLADA file: " + filePath);
         }
 
-        AIMesh mesh = AIMesh.create(scene.mMeshes().get(0));
+        Map<Mesh, Vector3f> meshData = new HashMap<>();
+        AINode rootNode = scene.mRootNode();
 
+        processNode(rootNode, scene, new Matrix4f(), meshData);
+
+        Logger.log(Level.INFO, "Loaded " + meshData.size() + " meshes from " + filePath);
+        return meshData;
+    }
+
+    private static void processNode(AINode node, AIScene scene, Matrix4f parentTransform,
+            Map<Mesh, Vector3f> meshData) {
+        Matrix4f transform = convertMatrix(node.mTransformation()).mul(parentTransform);
+
+        for (int i = 0; i < node.mNumMeshes(); i++) {
+            int meshIndex = node.mMeshes().get(i);
+            AIMesh mesh = AIMesh.create(scene.mMeshes().get(meshIndex));
+
+            Vector3f position = extractPosition(transform);
+            Mesh processedMesh = processMesh(mesh, scene);
+
+            meshData.put(processedMesh, position);
+        }
+
+        for (int i = 0; i < node.mNumChildren(); i++) {
+            processNode(AINode.create(node.mChildren().get(i)), scene, transform, meshData);
+        }
+    }
+
+    private static Mesh processMesh(AIMesh mesh, AIScene scene) {
         List<Float> verticesList = new ArrayList<>();
         AIVector3D.Buffer vertices = mesh.mVertices();
         for (int i = 0; i < mesh.mNumVertices(); i++) {
@@ -71,8 +100,8 @@ public class ColladaLoader {
             }
         }
 
-        Logger.log(Level.INFO, "Loaded mesh: " + filePath + " (" + verticesList.size() / 3 + " vertices)");
-
+        Logger.log(Level.INFO,
+                "Loaded mesh: " + mesh.mName().dataString() + " with " + verticesList.size() / 3 + " vertices.");
         return new Mesh(verticesList, normalsList, textureCoordsList, indicesList, texture);
     }
 
@@ -85,11 +114,23 @@ public class ColladaLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            Logger.log(Level.INFO, "Loaded texture: " + texturePath);
-
+            Logger.log(Level.INFO, "Texture: " + texturePath);
             return new Texture("assets/" + texturePath);
         }
-
         return null;
+    }
+
+    private static Matrix4f convertMatrix(AIMatrix4x4 aiMatrix) {
+        return new Matrix4f(
+                aiMatrix.a1(), aiMatrix.b1(), aiMatrix.c1(), aiMatrix.d1(),
+                aiMatrix.a2(), aiMatrix.b2(), aiMatrix.c2(), aiMatrix.d2(),
+                aiMatrix.a3(), aiMatrix.b3(), aiMatrix.c3(), aiMatrix.d3(),
+                aiMatrix.a4(), aiMatrix.b4(), aiMatrix.c4(), aiMatrix.d4());
+    }
+
+    private static Vector3f extractPosition(Matrix4f transform) {
+        Vector3f position = new Vector3f();
+        transform.getTranslation(position);
+        return position;
     }
 }
