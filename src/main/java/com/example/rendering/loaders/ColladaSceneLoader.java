@@ -3,10 +3,11 @@ package com.example.rendering.loaders;
 import java.nio.IntBuffer;
 import java.util.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
+import org.joml.Math;
 import org.lwjgl.assimp.*;
 
+import com.example.ecs.components.Transform;
 import com.example.rendering.Mesh;
 import com.example.rendering.Texture;
 import com.example.utils.Logger;
@@ -14,7 +15,7 @@ import com.example.utils.Logger.Level;
 
 public class ColladaSceneLoader {
 
-    public static Map<Mesh, Vector3f> load(String filePath) {
+    public static Map<Mesh, Transform> load(String filePath) {
         AIScene scene = Assimp.aiImportFile(filePath,
                 Assimp.aiProcess_Triangulate | Assimp.aiProcess_GenNormals | Assimp.aiProcess_FlipUVs);
 
@@ -22,27 +23,39 @@ public class ColladaSceneLoader {
             throw new RuntimeException("Failed to load COLLADA file: " + filePath);
         }
 
-        Map<Mesh, Vector3f> meshData = new HashMap<>();
+        Map<Mesh, Transform> meshData = new HashMap<>();
+
         AINode rootNode = scene.mRootNode();
 
         processNode(rootNode, scene, new Matrix4f(), meshData);
 
         Logger.log(Level.INFO, "Loaded " + meshData.size() + " meshes from " + filePath);
+
         return meshData;
     }
 
     private static void processNode(AINode node, AIScene scene, Matrix4f parentTransform,
-            Map<Mesh, Vector3f> meshData) {
+            Map<Mesh, Transform> meshData) {
         Matrix4f transform = convertMatrix(node.mTransformation()).mul(parentTransform);
+
+        Vector3f position = new Vector3f();
+        Vector3f scale = new Vector3f();
+        Quaternionf rotation = new Quaternionf();
+
+        transform.getTranslation(position);
+        transform.getUnnormalizedRotation(rotation);
+        transform.getScale(scale);
+
+        Matrix4f zUpToYUp = new Matrix4f().rotationX((float) Math.toRadians(90));
+        transform = zUpToYUp.mul(transform);
+
+        Transform transformData = new Transform(position, rotation, scale);
 
         for (int i = 0; i < node.mNumMeshes(); i++) {
             int meshIndex = node.mMeshes().get(i);
             AIMesh mesh = AIMesh.create(scene.mMeshes().get(meshIndex));
-
-            Vector3f position = extractPosition(transform);
             Mesh processedMesh = processMesh(mesh, scene);
-
-            meshData.put(processedMesh, position);
+            meshData.put(processedMesh, transformData);
         }
 
         for (int i = 0; i < node.mNumChildren(); i++) {
@@ -114,7 +127,7 @@ public class ColladaSceneLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            Logger.log(Level.DEBUG, "Loaded texture: " + texturePath);
+            Logger.log(Level.INFO, "Texture: " + texturePath);
             return new Texture("assets/" + texturePath);
         }
         return null;

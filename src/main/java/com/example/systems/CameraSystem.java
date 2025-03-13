@@ -3,8 +3,7 @@ package com.example.systems;
 import org.joml.Vector2f;
 
 import com.example.ecs.Entity;
-import com.example.ecs.components.CameraComponent;
-import com.example.ecs.components.TransformComponent;
+import com.example.ecs.components.Transform;
 import com.example.input.InputManager;
 
 public class CameraSystem extends GameSystem {
@@ -22,21 +21,21 @@ public class CameraSystem extends GameSystem {
 
     @Override
     public void update(float deltaTime) {
-        CameraComponent cameraComponent = cameraEntity.getComponent(CameraComponent.class);
-        TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+        Transform camera = cameraEntity.getComponent(Transform.class);
+        Transform player = playerEntity.getComponent(Transform.class);
 
-        if (cameraComponent == null || playerTransform == null)
+        if (camera == null || player == null)
             return;
 
         Vector2f mouseDelta = inputManager.getMouseDelta();
 
-        cameraComponent.rotation.x = Math.max(-89.0f, Math.min(89.0f, cameraComponent.rotation.x));
-        cameraComponent.rotation.x -= mouseDelta.y * sensitivity;
+        camera.rotation.x -= mouseDelta.y * sensitivity;
+        camera.rotation.y += mouseDelta.x * sensitivity;
 
-        cameraComponent.rotation.y += mouseDelta.x * sensitivity;
+        camera.rotation.x = Math.max(-89.0f, Math.min(89.0f, camera.rotation.x));
 
-        cameraComponent.position.set(playerTransform.position);
-        playerTransform.rotation = cameraComponent.rotation;
+        camera.position.set(player.position);
+        player.rotation = camera.rotation;
     }
 
 }

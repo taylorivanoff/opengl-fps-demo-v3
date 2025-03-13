@@ -3,14 +3,14 @@ package com.example.systems;
 import org.joml.Vector3f;
 
 import com.example.ecs.Entity;
-import com.example.ecs.components.TransformComponent;
+import com.example.ecs.components.Transform;
 import com.example.input.InputBindingManager;
 import com.example.input.InputManager;
 
 public class CharacterControllerSystem extends GameSystem {
     private Entity player;
     private InputManager input;
-    private TransformComponent transform;
+    private Transform transform;
 
     private boolean noClipMode = false;
 
@@ -45,7 +45,7 @@ public class CharacterControllerSystem extends GameSystem {
 
     @Override
     public void update(float dt) {
-        TransformComponent transform = player.getComponent(TransformComponent.class);
+        Transform transform = player.getComponent(Transform.class);
         if (transform == null) {
             return;
         }

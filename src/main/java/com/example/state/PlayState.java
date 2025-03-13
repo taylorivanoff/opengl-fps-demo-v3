@@ -2,10 +2,12 @@ package com.example.state;
 
 import java.util.Map;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import com.example.core.WindowManager;
 import com.example.ecs.Entity;
+import com.example.ecs.components.Transform;
 import com.example.factories.EntityFactory;
 import com.example.input.InputBindingManager;
 import com.example.input.InputManager;
@@ -30,18 +32,20 @@ public class PlayState extends GameState {
 
         EntityFactory scene = new EntityFactory(ecs);
 
-        Entity player = scene.addPlayer(new Vector3f(0, 2, 0), shader);
-        Entity camera = scene.addCamera(new Vector3f(), new Vector3f());
+        Entity player = scene.addPlayer(new Vector3f(0, 2, 0), new Quaternionf(), new Vector3f());
+        Entity camera = scene.addCamera();
 
         // Mesh torus = ColladaLoader.load("assets/Torus.dae");
         // Mesh cube = ColladaLoader.load("assets/Cube.dae");
 
-        Map<Mesh, Vector3f> environmentMeshes = ColladaSceneLoader.load("assets/new-scene.dae");
-        for (Map.Entry<Mesh, Vector3f> entry : environmentMeshes.entrySet()) {
+        Map<Mesh, Transform> environmentMeshes = ColladaSceneLoader.load("assets/new-scene.dae");
+        for (Map.Entry<Mesh, Transform> entry : environmentMeshes.entrySet()) {
             Mesh mesh = entry.getKey();
-            Vector3f position = entry.getValue();
-            scene.addGameObject(mesh, position, shader);
-            Logger.log(Level.INFO, "Created entity at position: " + position);
+            Transform transform = entry.getValue();
+            System.out.println(transform.scale);
+
+            scene.addGameObject(mesh, transform, shader);
+            Logger.log(Level.INFO, "Created entity at position: " + transform.position);
         }
 
         // float spacing = 5.0f;
