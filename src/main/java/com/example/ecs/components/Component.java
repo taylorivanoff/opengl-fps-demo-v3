@@ -1,5 +1,5 @@
 package com.example.ecs.components;
 
-public abstract class GameComponent {
+public abstract class Component {
 
 }

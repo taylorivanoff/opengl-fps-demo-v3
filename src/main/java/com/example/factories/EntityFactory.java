@@ -1,5 +1,6 @@
 package com.example.factories;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import com.example.ecs.Entity;
@@ -15,24 +16,27 @@ public class EntityFactory {
         this.em = entityManager;
     }
 
-    public Entity addCamera(Vector3f camPos, Vector3f camRotation) {
-        Entity camera = em.createEntity();
-        camera.addComponent(new CameraComponent(camPos, camRotation));
-        return camera;
+    public Entity addCamera() {
+        Entity e = em.createEntity();
+        e.addComponent(new Transform());
+        e.addComponent(new Camera());
+        return e;
     }
 
-    public Entity addPlayer(Vector3f position, Shader shader) {
-        Entity player = em.createEntity();
-        player.addComponent(new PlayerComponent());
-        player.addComponent(new CharacterControllerComponent());
-        player.addComponent(new TransformComponent(position));
-        return player;
+    public Entity addPlayer(Vector3f position, Quaternionf rotation, Vector3f scale) {
+        Entity e = em.createEntity();
+        e.addComponent(new Transform(position,
+                rotation,
+                scale));
+        e.addComponent(new Player());
+        e.addComponent(new CharacterController());
+        return e;
     }
 
-    public Entity addGameObject(Mesh mesh, Vector3f position, Shader shader) {
-        Entity entity = em.createEntity();
-        entity.addComponent(new TransformComponent(position));
-        entity.addComponent(new RenderableComponent(mesh, shader));
-        return entity;
+    public Entity addGameObject(Mesh mesh, Transform transform, Shader shader) {
+        Entity e = em.createEntity();
+        e.addComponent(transform);
+        e.addComponent(new Renderable(mesh, shader));
+        return e;
     }
 }

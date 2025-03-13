@@ -2,7 +2,7 @@ package com.example.ecs.components;
 
 import org.joml.Vector3f;
 
-public class CharacterControllerComponent extends GameComponent {
+public class CharacterController extends Component {
     public Vector3f velocity = new Vector3f(0, 0, 0);
     public boolean isGrounded = false;
     public boolean isCrouching = false;
@@ -15,6 +15,6 @@ public class CharacterControllerComponent extends GameComponent {
     public float headBobSpeed = 8.0f;
     public float headBobTimer = 0.0f;
 
-    public CharacterControllerComponent() {
+    public CharacterController() {
     }
 }
