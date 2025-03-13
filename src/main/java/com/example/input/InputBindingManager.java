@@ -10,6 +10,7 @@ public class InputBindingManager {
         MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD,
         JUMP, CROUCH, SPRINT,
         FIRE,
+        NO_CLIP_MODE,
     }
 
     private final Map<Action, Integer> actionKeyMap = new HashMap<>();
@@ -25,6 +26,8 @@ public class InputBindingManager {
         actionKeyMap.put(Action.SPRINT, GLFW_KEY_LEFT_SHIFT);
 
         actionKeyMap.put(Action.FIRE, GLFW_MOUSE_BUTTON_LEFT);
+
+        actionKeyMap.put(Action.NO_CLIP_MODE, GLFW_KEY_N);
     }
 
     public int getKeyForAction(Action action) {

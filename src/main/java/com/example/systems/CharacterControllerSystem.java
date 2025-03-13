@@ -12,6 +12,8 @@ public class CharacterControllerSystem extends GameSystem {
     private InputManager input;
     private TransformComponent transform;
 
+    private boolean noClipMode = false;
+
     // Movement
     private float baseSpeed = 5.0f;
     private float currentSpeed = 5.0f;
@@ -50,6 +52,10 @@ public class CharacterControllerSystem extends GameSystem {
 
         this.transform = transform;
 
+        if (input.isActionPressed(InputBindingManager.Action.NO_CLIP_MODE)) {
+            toggleNoClipMode();
+        }
+
         handleKeyboard(dt);
         applyGravity(dt);
         updateHeadBob(dt);
@@ -63,7 +69,7 @@ public class CharacterControllerSystem extends GameSystem {
 
         // Update speed modifiers
         currentSpeed = baseSpeed;
-        if (isGrounded) {
+        if (isGrounded || noClipMode) { // Allow speed modifiers in no-clip mode
             if (input.isActionPressed(InputBindingManager.Action.SPRINT))
                 currentSpeed *= sprintMultiplier;
             if (input.isActionPressed(InputBindingManager.Action.CROUCH)) {
@@ -82,9 +88,9 @@ public class CharacterControllerSystem extends GameSystem {
             Vector3f horizontalForward = new Vector3f(forward.x, 0, forward.z).normalize();
 
             if (input.isActionPressed(InputBindingManager.Action.MOVE_FORWARD))
-                movement.add(horizontalForward);
+                movement.add(noClipMode ? forward : horizontalForward);
             if (input.isActionPressed(InputBindingManager.Action.MOVE_BACKWARD))
-                movement.sub(horizontalForward);
+                movement.sub(noClipMode ? forward : horizontalForward);
             if (input.isActionPressed(InputBindingManager.Action.MOVE_LEFT))
                 movement.sub(right);
             if (input.isActionPressed(InputBindingManager.Action.MOVE_RIGHT))
@@ -99,26 +105,32 @@ public class CharacterControllerSystem extends GameSystem {
         velocity.set(movement);
         transform.position.add(velocity.mul(dt));
 
-        // Handle jumping
-        if (input.isActionPressed(InputBindingManager.Action.JUMP) && isGrounded) {
-            verticalVelocity = jumpForce;
-            isGrounded = false;
+        /// Handle jumping (only in no-clip mode)
+        if (noClipMode && input.isActionPressed(InputBindingManager.Action.JUMP)) {
+            transform.position.y += currentSpeed * dt; // Move upward
+        }
+
+        // Handle descending (only in no-clip mode)
+        if (noClipMode && input.isActionPressed(InputBindingManager.Action.CROUCH)) {
+            transform.position.y -= currentSpeed * dt; // Move downward
         }
     }
 
     private void applyGravity(float dt) {
-        if (!isGrounded) {
-            verticalVelocity += gravity * dt;
-            transform.position.add(velocity.mul(dt)); // Maintain horizontal velocity
-        }
+        if (!noClipMode) { // Only apply gravity if not in no-clip mode
+            if (!isGrounded) {
+                verticalVelocity += gravity * dt;
+                transform.position.add(velocity.mul(dt)); // Maintain horizontal velocity
+            }
 
-        transform.position.y += verticalVelocity * dt;
+            transform.position.y += verticalVelocity * dt;
 
-        if (transform.position.y <= normalYPosition) {
-            transform.position.y = normalYPosition;
-            verticalVelocity = 0.0f;
-            isGrounded = true;
-            velocity.set(0, 0, 0); // Reset velocity when landing
+            if (transform.position.y <= normalYPosition) {
+                transform.position.y = normalYPosition;
+                verticalVelocity = 0.0f;
+                isGrounded = true;
+                velocity.set(0, 0, 0); // Reset velocity when landing
+            }
         }
     }
 
@@ -169,5 +181,13 @@ public class CharacterControllerSystem extends GameSystem {
 
         forward.cross(up, right);
         return right.normalize();
+    }
+
+    public void toggleNoClipMode() {
+        noClipMode = !noClipMode;
+        if (noClipMode) {
+            verticalVelocity = 0.0f;
+            isGrounded = true;
+        }
     }
 }
