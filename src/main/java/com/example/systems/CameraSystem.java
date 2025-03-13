@@ -24,24 +24,23 @@ public class CameraSystem extends GameSystem {
 
     @Override
     public void update(float deltaTime) {
-        CameraComponent camera = cameraEntity.getComponent(CameraComponent.class);
+        CameraComponent cameraComponent = cameraEntity.getComponent(CameraComponent.class);
         TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
 
-        if (camera == null || playerTransform == null)
+        if (cameraComponent == null || playerTransform == null)
             return;
 
-        // 🔹 Mouse Look Rotation
         Vector2f mouseDelta = inputManager.getMouseDelta();
-        camera.rotation.x -= mouseDelta.y * sensitivity; // Pitch (Up/Down)
-        camera.rotation.y += mouseDelta.x * sensitivity; // Yaw (Left/Right)
 
-        // 🔹 Clamp Pitch (Prevents flipping over)
-        camera.rotation.x = Math.max(-89.0f, Math.min(89.0f, camera.rotation.x));
+        cameraComponent.rotation.x = Math.max(-89.0f, Math.min(89.0f, cameraComponent.rotation.x));
+        cameraComponent.rotation.x -= mouseDelta.y * sensitivity;
 
-        // 🔹 Follow Player (Attach Camera to Player's Position)
-        camera.position.set(playerTransform.position);
-        Logger.log(Level.DEBUG, "cameraPos: " + camera.position);
-        Logger.log(Level.DEBUG, "cameraRot: " + camera.rotation);
+        cameraComponent.rotation.y += mouseDelta.x * sensitivity;
+
+        cameraComponent.position.set(playerTransform.position);
+        playerTransform.rotation = cameraComponent.rotation;
+        Logger.log(Level.DEBUG, "cameraPos: " + cameraComponent.position);
+        Logger.log(Level.DEBUG, "cameraRot: " + cameraComponent.rotation);
     }
 
 }

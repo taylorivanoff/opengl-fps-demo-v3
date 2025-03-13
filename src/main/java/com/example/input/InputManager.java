@@ -81,4 +81,12 @@ public class InputManager {
     public void enableCursor() {
         GLFW.glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+
+    public boolean isFirstMouseMove() {
+        return firstMouseMove;
+    }
+
+    public void setFirstMouseMove(boolean firstMouseMove) {
+        this.firstMouseMove = firstMouseMove;
+    }
 }
