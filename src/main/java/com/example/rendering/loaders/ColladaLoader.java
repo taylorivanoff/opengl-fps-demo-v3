@@ -8,6 +8,8 @@ import org.lwjgl.assimp.*;
 
 import com.example.rendering.Mesh;
 import com.example.rendering.Texture;
+import com.example.utils.Logger;
+import com.example.utils.Logger.Level;
 
 public class ColladaLoader {
     public static Mesh loadCollada(String filePath) {
@@ -69,7 +71,8 @@ public class ColladaLoader {
             }
         }
 
-        System.out.println("Loaded: " + filePath);
+                Logger.log(Level.INFO, "mesh: " + filePath);
+
 
         return new Mesh(verticesList, normalsList, textureCoordsList, indicesList, texture);
     }
@@ -83,7 +86,8 @@ public class ColladaLoader {
         path.free();
 
         if (!texturePath.isEmpty()) {
-            System.out.println("Loaded: " + texturePath);
+            Logger.log(Level.INFO, "texture: " + texturePath);
+
             return new Texture("assets/" + texturePath);
         }
 

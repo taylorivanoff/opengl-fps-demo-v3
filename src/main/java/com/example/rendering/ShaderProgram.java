@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 
 import org.lwjgl.opengl.GL20;
 
+import com.example.utils.Logger;
+import com.example.utils.Logger.Level;
+
 public class ShaderProgram {
     private final int programId;
 
@@ -44,7 +47,7 @@ public class ShaderProgram {
             throw new RuntimeException("Shader compilation failed: " + GL20.glGetShaderInfoLog(shaderId));
         }
 
-        System.out.println("Loaded: " + filePath);
+        Logger.log(Level.INFO, "shader: " + filePath);
 
         return shaderId;
     }

@@ -1,22 +1,17 @@
 package com.example.core;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.GL_RENDERER;
-import static org.lwjgl.opengl.GL11.GL_VENDOR;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glGetString;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class WindowManager {
     private long window;
     private double lastTime;
-    private double lastMouseX = 400;
-    private double lastMouseY = 300;
-    private boolean firstMouse = true;
 
     public void init() {
         GLFWErrorCallback.createPrint(System.err).set();
@@ -76,30 +71,6 @@ public class WindowManager {
         glfwShowWindow(window);
 
         lastTime = glfwGetTime();
-    }
-
-    public double[] getMouseDeltas() {
-        double[] pos = new double[2];
-        double[] xpos = new double[1];
-        double[] ypos = new double[1];
-        glfwGetCursorPos(window, xpos, ypos);
-        pos[0] = xpos[0];
-        pos[1] = ypos[0];
-
-        if (firstMouse) {
-            lastMouseX = pos[0];
-            lastMouseY = pos[1];
-            firstMouse = false;
-            return new double[] { 0, 0 };
-        }
-
-        double xoffset = pos[0] - lastMouseX;
-        double yoffset = lastMouseY - pos[1];
-
-        lastMouseX = pos[0];
-        lastMouseY = pos[1];
-
-        return new double[] { xoffset, yoffset };
     }
 
     public boolean shouldClose() {

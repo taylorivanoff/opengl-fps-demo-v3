@@ -1,26 +1,26 @@
 package com.example.ecs.components;
 
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import com.example.ecs.Component;
-
-public class Transform extends Component {
+public class TransformComponent extends GameComponent {
     public Vector3f position;
     public Quaternionf rotation;
     public Vector3f scale;
+    public Vector3f velocity;
 
-    public Transform() {
+    public TransformComponent() {
         this.position = new Vector3f(0, 0, 0);
         this.rotation = new Quaternionf();
         this.scale = new Vector3f(1, 1, 1);
+        this.velocity = new Vector3f(0, 0, 0);
     }
 
-    public Transform(Vector3f position) {
+    public TransformComponent(Vector3f position) {
         this.position = position;
         this.rotation = new Quaternionf();
         this.scale = new Vector3f(1, 1, 1);
+        this.velocity = new Vector3f(0, 0, 0);
     }
 
     public Vector3f getPosition() {
@@ -47,11 +47,12 @@ public class Transform extends Component {
         this.scale = scale;
     }
 
-    public Matrix4f getMatrix() {
-        Matrix4f matrix = new Matrix4f().identity();
-        matrix.translate(position);
-        matrix.rotate(rotation);
-        matrix.scale(scale);
-        return matrix;
+    public Vector3f getVelocity() {
+        return velocity;
     }
+
+    public void setVelocity(Vector3f velocity) {
+        this.velocity = velocity;
+    }
+
 }

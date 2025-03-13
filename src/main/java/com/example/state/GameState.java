@@ -1,21 +1,24 @@
 package com.example.state;
 
+import com.example.core.WindowManager;
 import com.example.ecs.EntityManager;
 
 public abstract class GameState {
-    protected EntityManager entityManager;
+    protected WindowManager windowManager;
+    protected EntityManager ecs;
 
-    public GameState() {
-        entityManager = new EntityManager();
+    public GameState(WindowManager windowManager) {
+        this.ecs = new EntityManager();
+        this.windowManager = windowManager;
     }
 
     public abstract void init();
 
     public void update(float deltaTime) {
-        entityManager.update(deltaTime);
+        ecs.updateSystems(deltaTime);
     }
 
     public void cleanup() {
-        entityManager.clear();
+        ecs.clear();
     }
 }

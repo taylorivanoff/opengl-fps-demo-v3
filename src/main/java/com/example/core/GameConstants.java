@@ -8,5 +8,4 @@ public class GameConstants {
     public static final float CAMERA_FOV = 65.0f;
     public static final float CAMERA_NEAR_CLIP = 0.1f;
     public static final float CAMERA_FAR_CLIP = 1000.0f;
-
 }

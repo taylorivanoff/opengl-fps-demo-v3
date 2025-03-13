@@ -1,13 +1,13 @@
 package com.example.ecs;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.example.ecs.components.GameComponent;
 
 public class Entity {
     private final int id;
-    private final Map<Class<? extends Component>, Component> components = new ConcurrentHashMap<>();
+    private final Map<Class<? extends GameComponent>, GameComponent> components = new ConcurrentHashMap<>();
 
     public Entity(int id) {
         this.id = id;
@@ -17,19 +17,19 @@ public class Entity {
         return id;
     }
 
-    public <T extends Component> void addComponent(T component) {
+    public <T extends GameComponent> void addComponent(T component) {
         components.put(component.getClass(), component);
     }
 
-    public <T extends Component> T getComponent(Class<T> componentClass) {
+    public <T extends GameComponent> T getComponent(Class<T> componentClass) {
         return componentClass.cast(components.get(componentClass));
     }
 
-    public Collection<Component> getAllComponents() {
+    public Collection<GameComponent> getAllComponents() {
         return Collections.unmodifiableCollection(components.values());
     }
 
-    public boolean hasComponent(Class<? extends Component> componentClass) {
+    public boolean hasComponent(Class<? extends GameComponent> componentClass) {
         return components.containsKey(componentClass);
     }
 }
