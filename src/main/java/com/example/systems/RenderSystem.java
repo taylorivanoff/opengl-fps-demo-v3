@@ -14,12 +14,9 @@ import com.example.ecs.components.Camera;
 import com.example.ecs.components.Player;
 import com.example.ecs.components.Renderable;
 import com.example.ecs.components.Transform;
-import com.example.utils.Logger;
-import com.example.utils.Logger.Level;
 
 public class RenderSystem extends GameSystem {
     private EntityManager entityManager;
-    private boolean debugMode = true;
 
     public RenderSystem(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -47,10 +44,6 @@ public class RenderSystem extends GameSystem {
 
             List<Entity> entities = entityManager.getEntitiesWith(Renderable.class);
 
-            if (debugMode) {
-                Logger.log(Level.DEBUG, "Rendered Entities: " + entities.size());
-            }
-
             for (Entity entity : entities) {
                 Transform transform = entity.getComponent(Transform.class);
                 Renderable renderable = entity.getComponent(Renderable.class);
@@ -60,11 +53,13 @@ public class RenderSystem extends GameSystem {
 
                     Matrix4f modelMatrix = new Matrix4f()
                             .translate(new Vector3f(transform.position.x, transform.position.y, transform.position.z));
-                    modelMatrix.get(matrixBuffer);
 
+                    modelMatrix.get(matrixBuffer);
                     renderable.shader.setUniform("uModel", matrixBuffer);
+
                     viewMatrix.get(matrixBuffer);
                     renderable.shader.setUniform("uView", matrixBuffer);
+
                     projectionMatrix.get(matrixBuffer);
                     renderable.shader.setUniform("uProjection", matrixBuffer);
 
